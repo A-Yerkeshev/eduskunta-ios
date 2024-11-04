@@ -27,4 +27,5 @@ struct Member: Hashable, Codable, Identifiable {
     var partyImg: Image {
         Image(party)
     }
+    var isFavourite: Bool? = false
 }

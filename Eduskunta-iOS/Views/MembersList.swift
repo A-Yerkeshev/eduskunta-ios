@@ -9,11 +9,22 @@ import SwiftUI
 
 struct MembersList: View {
     @Environment(ModelData.self) var modelData
+    @State private var favouritesOnly = false
+    
+    private var filteredMembers: [Member] {
+        modelData.members.filter { member in
+            (!favouritesOnly || member.isFavourite == true)
+        }
+    }
     
     var body: some View {
         NavigationSplitView {
             List {
-                ForEach(modelData.members) { member in
+                Toggle(isOn: $favouritesOnly) {
+                    Text("Favourites only")
+                }
+                
+                ForEach(filteredMembers) { member in
                     NavigationLink {
                         MemberDetails(member: member)
                     } label: {
@@ -21,6 +32,7 @@ struct MembersList: View {
                     }
                 }
             }
+            .animation(.default, value: filteredMembers)
             .navigationTitle("Members")
         } detail: {
             Text("Select parliament's member")

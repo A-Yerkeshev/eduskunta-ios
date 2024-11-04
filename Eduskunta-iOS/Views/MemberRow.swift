@@ -12,6 +12,10 @@ struct MemberRow: View {
     
     var body: some View {
         HStack {
+            if member.isFavourite == true {
+                Image(systemName: "star.fill")
+                    .foregroundStyle(.yellow)
+            }
             Text(member.first + " " + member.last)
                 .font(.headline)
             Spacer()
