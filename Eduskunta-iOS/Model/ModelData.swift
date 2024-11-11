@@ -10,6 +10,12 @@ import Foundation
 @Observable
 class ModelData {
     var members: [Member] = load("mps.json")
+    var parties: [String: [Member]] {
+        Dictionary(
+            grouping: members,
+            by: { $0.party }
+        )
+    }
 }
 
 func load<T: Decodable>(_ filename: String) -> T {

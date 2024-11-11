@@ -8,8 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var viewType: Tab = .byMember
+    
+    enum Tab {
+        case byParty
+        case byMember
+    }
+    
     var body: some View {
-        MembersList()
+        TabView(selection: $viewType) {
+            MembersList()
+                .tabItem {
+                    Label("By Member", systemImage: "list.bullet")
+                }
+                .tag(Tab.byMember)
+            
+            PartiesHome()
+                .tabItem {
+                    Label("By Party", systemImage: "grid")
+                }
+                .tag(Tab.byParty)
+        }
     }
 }
 
