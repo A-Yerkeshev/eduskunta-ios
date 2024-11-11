@@ -9,7 +9,15 @@ import Foundation
 
 @Observable
 class ModelData {
-    var members: [Member] = load("mps.json")
+    //var members: [Member] = loadFromFile("mps.json")
+    var members: [Member] = []
+    
+    init() {
+        Task {
+            members = await loadFromRemote("https://users.metropolia.fi/~armany/Swift/mps.json")
+        }
+    }
+    
     var parties: [String: [Member]] {
         Dictionary(
             grouping: members,
@@ -19,7 +27,7 @@ class ModelData {
     var favouriteParties: [String] = []
 }
 
-func load<T: Decodable>(_ filename: String) -> T {
+func loadFromFile<T: Decodable>(_ filename: String) -> T {
     let data: Data
     
     guard let file = Bundle.main.url(forResource: filename, withExtension: nil)
@@ -36,5 +44,26 @@ func load<T: Decodable>(_ filename: String) -> T {
         return try decoder.decode(T.self, from: data)
     } catch {
         fatalError("Couldn't parse \(filename) as \(T.self):\n\(error)")
+    }
+}
+
+func loadFromRemote<T: Decodable>(_ urlString: String) async -> T {
+    let data: Data
+    let response: URLResponse?
+    
+    guard let url = URL(string: urlString)
+    else {fatalError("Couldn't resolve \(urlString).")}
+    
+    do {
+        (data, response) = try await URLSession.shared.data(from: url)
+    } catch {
+        fatalError("Couldn't connect to \(urlString).")
+    }
+    
+    do {
+        let decoder = JSONDecoder()
+        return try decoder.decode(T.self, from: data)
+    } catch {
+        fatalError("Couldn't parse \(urlString) as \(T.self):\n\(error)")
     }
 }
