@@ -16,6 +16,7 @@ class ModelData {
             by: { $0.party }
         )
     }
+    var favouriteParties: [String] = []
 }
 
 func load<T: Decodable>(_ filename: String) -> T {

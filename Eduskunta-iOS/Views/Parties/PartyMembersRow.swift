@@ -8,13 +8,21 @@
 import SwiftUI
 
 struct PartyMembersRow: View {
+    @Environment(ModelData.self) var modelData
     var party: String
     var members: [Member]
     
     var body: some View {
+        @Bindable var modelData = modelData
+        
         VStack(alignment: .leading) {
-            Text(partyNames[party] ?? party)
-                .font(.title2)
+            HStack {
+                Text(partyNames[party] ?? party)
+                    .font(.title2)
+                FavouriteButton(isSet: .constant(false),
+                                favouriteParties: $modelData.favouriteParties,
+                                party: party)
+            }
                 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 0) {
@@ -37,5 +45,5 @@ struct PartyMembersRow: View {
     PartyMembersRow(
         party: members[0].party,
         members: members
-    )
+    ).environment(ModelData())
 }

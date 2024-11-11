@@ -21,7 +21,8 @@ struct MemberDetails: View {
             HStack {
                 Text("\(member.first) \(member.last)")
                     .font(.largeTitle)
-                FavouriteButton(isSet: $modelData.members[index].isFavourite)
+                FavouriteButton(isSet: $modelData.members[index].isFavourite,
+                                favouriteParties: $modelData.favouriteParties)
             }
             member.partyImg
                 .resizable()

@@ -9,12 +9,23 @@ import SwiftUI
 
 struct PartiesHome: View {
     @Environment(ModelData.self) var modelData
+    @State private var favouritesOnly = false
+    
+    private var filteredParties: [String] {
+        modelData.parties.keys.filter {
+            !favouritesOnly || modelData.favouriteParties.contains($0)
+        }
+    }
     
     var body: some View {
         NavigationSplitView {
             List {
-                ForEach(modelData.parties.keys.sorted(), id: \.self) { party in
-                    PartyMembersRow(party: partyNames[party] ?? party, members: modelData.parties[party]!)
+                Toggle(isOn: $favouritesOnly) {
+                    Text("Favourites only")
+                }
+                
+                ForEach(filteredParties.sorted(), id: \.self) { party in
+                    PartyMembersRow(party: party, members: modelData.parties[party]!)
                 }
             }
         } detail: {
